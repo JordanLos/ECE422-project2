@@ -132,7 +132,7 @@ https://eclass.srv.ualberta.ca/pluginfile.php/7017525/mod_resource/content/1/Pro
 
 # Submission ==April 18?==
 
-- [ ] Add alirezagoli to GitHub project
+- [x] Add alirezagoli to GitHub project
 - [ ] Source Code 
 - [ ] Design Artifaces
 - [ ] Final Report
