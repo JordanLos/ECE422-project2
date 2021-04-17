@@ -87,6 +87,18 @@
 - How to measure response times?
 - Do we need to spawn more clusters? I don't think we can get more compute resources
 
+### ToDo
+
+- [ ] Script to scale up
+- [ ] read response times
+- [ ] Visualize different things
+
+### Scaling
+
+`$ docker service scale app_name_web=5`
+
+**How many replicas can we make))**
+
 # Demo
 
 https://eclass.srv.ualberta.ca/pluginfile.php/7017526/mod_resource/content/1/Demo%20Marking%20Guide.pdf
@@ -137,3 +149,75 @@ https://eclass.srv.ualberta.ca/pluginfile.php/7017525/mod_resource/content/1/Pro
 - [ ] Design Artifaces
 - [ ] Final Report
 - [ ] Book Demo
+
+
+
+# Docker Notes
+
+File Sturecture
+
+```bash
+.
+├── docker-compose.yml
+├── docker-images
+│  └── web-app
+│     ├── Dockerfile
+│     ├── myapp.py
+│     └── requirements.txt
+├── figures
+│  ├── app.png
+│  ├── sg.png
+│  └── vis.png
+├── http_client.py
+├── ProjectNotes.md
+└── README.md
+```
+
+`docker-compose.yml`
+
+- Use a `Dockerfile` to dfine the app environment
+- define the services in `docker-compose.yml`
+
+==How to Scale Apps with Swarm==: https://docs.docker.com/get-started/swarm-deploy/
+
+### Docs
+
+[Offical](https://docs.docker.com/engine/swarm/)
+
+==Swarm==
+
+- multiple docker hosts in swarm mode. 
+
+==Task==
+
+- A running container being managed by the swarm (not a standalone)
+
+==Node==
+
+- A docker engine within the swarm. Can be a manager or a worker.
+- Workers receive an execute tasks from managers
+- Manager can also act as workers.
+
+==Service==
+
+- Specifies which container image to use and what commands to run on it.
+- Definition of tasks to execute on nodes
+
+**Tutorial**
+
+- 
+
+### Docker commands
+
+`docker swarm join-token worker`: Generates Docker Token for swarms
+
+# How to SSH In
+
+1. Make sure TunnelBlick is running: [link](https://wiki.cybera.ca/display/RAC/Rapid+Access+Cloud+Virtual+Private+Network)
+
+2. SSH by `ssh -i /path/to/ece422.pem ubuntu@<ip address>`
+
+   ​	Ip address is here <img src="/Users/jordanlos/Library/Application Support/typora-user-images/image-20210417022455202.png" alt="image-20210417022455202" style="zoom:25%;" />
+
+   
+
