@@ -99,6 +99,11 @@
 
 **How many replicas can we make))**
 
+- Bash script, timing response using curl
+- python curl to get responsone time
+- run docker to get workdload
+- application size
+
 # Demo
 
 https://eclass.srv.ualberta.ca/pluginfile.php/7017526/mod_resource/content/1/Demo%20Marking%20Guide.pdf
@@ -120,9 +125,15 @@ https://eclass.srv.ualberta.ca/pluginfile.php/7017525/mod_resource/content/1/Pro
 
   - [ ] Workload Plot
 
-  - [ ] Response time plot
+    - Poll redis
 
+  - [ ] Response time plot
+  
+    ​	- using curl
+  
   - [ ] Application size plot
+  
+    ​	- Maybe using sock?
 
 # Design Artifacts
 
@@ -205,13 +216,15 @@ File Sturecture
 
 **Tutorial**
 
-- 
-
 ### Docker commands
 
 `docker swarm join-token worker`: Generates Docker Token for swarms
 
-# How to SSH In
+
+
+
+
+- How to SSH In
 
 1. Make sure TunnelBlick is running: [link](https://wiki.cybera.ca/display/RAC/Rapid+Access+Cloud+Virtual+Private+Network)
 
