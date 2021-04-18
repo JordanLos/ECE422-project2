@@ -117,6 +117,16 @@
 
 ==SCP TO MANAGER== ` sudo scp -i ../ece422.pem -r <local_file>  ubuntu@10.2.9.255:/home/ubuntu/dev`
 
+==Get Docker Compose==
+
+from `master branch` 
+
+```
+wget https://raw.githubusercontent.com/JordanLos/ECE422-project2/master/docker-compose.yml
+```
+
+
+
 # Demo
 
 https://eclass.srv.ualberta.ca/pluginfile.php/7017526/mod_resource/content/1/Demo%20Marking%20Guide.pdf
