@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  as-client:
+    image: jordanlos/autoscaler-client
+    ports:
+      - "3000:3000"
+  as-server:
+    image: jordanlos/autoscaler-server
+    ports:
+      - "5678:5678"
   web:
     image: henaras/simpleweb:1
     ports:
@@ -15,7 +23,7 @@ services:
     ports:
       - "6379:6379"
     deploy:
-     resources:  
+     resources:
         limits:
           cpus: '0.25'
           memory: 256M

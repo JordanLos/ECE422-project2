@@ -90,8 +90,17 @@
 ### ToDo
 
 - [ ] Script to scale up
+  - Scaling don
 - [ ] read response times
+  - Ping
 - [ ] Visualize different things
+  - [ ] workload
+    - get redis 
+  - [ ] response time
+    - Ping and test
+  - [ ] size of application
+    - Just use the number thats in python to set the number of replicas
+    - All others are just 1
 
 ### Scaling
 
@@ -103,6 +112,10 @@
 - python curl to get responsone time
 - run docker to get workdload
 - application size
+
+
+
+==SCP TO MANAGER== ` sudo scp -i ../ece422.pem -r <local_file>  ubuntu@10.2.9.255:/home/ubuntu/dev`
 
 # Demo
 
@@ -133,7 +146,9 @@ https://eclass.srv.ualberta.ca/pluginfile.php/7017525/mod_resource/content/1/Pro
   
   - [ ] Application size plot
   
-    ​	- Maybe using sock?
+    	- Maybe using sock?
+
+==Added an Extra port: 3000==
 
 # Design Artifacts
 
@@ -219,6 +234,14 @@ File Sturecture
 ### Docker commands
 
 `docker swarm join-token worker`: Generates Docker Token for swarms
+
+`docker stack deploy --compose-file docker-compose.yml <app_name>`
+
+- Deploys to the swarm stack
+
+`docker stack rm <app_name>`
+
+
 
 
 

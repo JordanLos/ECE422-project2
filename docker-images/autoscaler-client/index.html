@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebSocket demo</title>
+    </head>
+    <body>
+      <h1>I have loaded at least</h1>
+        <!-- Plotly.js -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script>
+            var ws = new WebSocket("ws://0.0.0.0:5678/"),
+                messages = document.createElement('ul');
+            ws.onmessage = function (event) {
+                data = JSON.parse(event.data);
+                var response_time_plot = {
+                    x: data.x1, 
+                    y: data.y1, 
+                    type: 'scatter',
+                };
+
+                var requests_plot = {
+                    x: data.x2, 
+                    y: data.y2, 
+                    type: 'scatter',
+                };
+
+                var replications_plot = {
+                    x: data.x3, 
+                    y: data.y3, 
+                    type: 'scatter',
+                };
+
+                var layout1 = {
+                    xaxis: {
+                        title: {
+                            text: 'Elapsed Time',
+                            font: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        },
+                    },
+                    yaxis: {
+                        title: {
+                            text: 'Response Time (seconds)',
+                            font: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        }
+                    }
+                };
+
+                var layout2 = {
+                    xaxis: {
+                        title: {
+                            text: 'Elapsed Time',
+                            font: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        },
+                    },
+                    yaxis: {
+                        title: {
+                            text: 'Requests per Second',
+                            font: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        }
+                    }
+                };
+
+                var layout3 = {
+                    xaxis: {
+                        title: {
+                            text: 'Elapsed Time',
+                            font: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        },
+                    },
+                    yaxis: {
+                        title: {
+                            text: 'Number of Replicas',
+                            font: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        }
+                    }
+                };
+
+                Plotly.newPlot('response-time-graph', [response_time_plot], layout1);
+                Plotly.newPlot('requests-graph', [requests_plot], layout2);
+                Plotly.newPlot('replications-graph', [replications_plot], layout3);
+            };
+            document.body.appendChild(messages);
+        </script>
+
+        <div style="justify-content: center;">
+            <div id="div1" style="justify-content: center;">
+                <h1 style="text-align: center;">Average Response Time History</h1>
+                <div id="response-time-graph" style="width: 800px; height: 400px; margin: auto;"></div>
+            </div>
+            <div id="div2" style="justify-content: center;">
+                <h1 style="text-align: center;">Workload History</h1>
+                <div id="requests-graph" style="width: 800px; height: 400px; margin: auto;"></div>
+            </div>
+            <div id="div3" style="justify-content: center;">
+                <h1 style="text-align: center;">Application Size History</h1>
+                <div id="replications-graph" style="width: 800px; height: 400px; margin: auto;"></div>
+            </div>
+        </div>
+    </body>
+</html>
