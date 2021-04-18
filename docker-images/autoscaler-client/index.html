@@ -4,13 +4,23 @@
         <title>WebSocket demo</title>
     </head>
     <body>
-      <h1>I have loaded at least</h1>
         <!-- Plotly.js -->
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script>
-            var ws = new WebSocket("ws://0.0.0.0:5678/"),
-                messages = document.createElement('ul');
+            var ws = new WebSocket("ws://0.0.0.0:5678/");
+
+            /*
+                    messages = document.createElement('ul');
+                ws.onmessage = function (event) {
+                    var messages = document.getElementsByTagName('ul')[0],
+                        message = document.createElement('li'),
+                        content = document.createTextNode(event.data);
+                    message.appendChild(content);
+                    messages.appendChild(message);
+            };
+            document.body.appendChild(messages);
+            */
             ws.onmessage = function (event) {
                 data = JSON.parse(event.data);
                 var response_time_plot = {
@@ -104,7 +114,6 @@
                 Plotly.newPlot('requests-graph', [requests_plot], layout2);
                 Plotly.newPlot('replications-graph', [replications_plot], layout3);
             };
-            document.body.appendChild(messages);
         </script>
 
         <div style="justify-content: center;">

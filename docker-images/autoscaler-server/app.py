@@ -23,7 +23,7 @@ async def time(websocket, path):
                                     'x2':x,'y2':y2,
                                     'x3':x,'y3':y3})
 
-        # now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.utcnow().isoformat() + "Z"
         print("going to sleep")
         await websocket.send(graph_to_send)
         await asyncio.sleep(random.random() * 3)
