@@ -4,7 +4,7 @@
 
 import asyncio
 import websockets
-
+import random
 import json
 import numpy as np
 
@@ -14,8 +14,8 @@ from redis import Redis
 
 ##### CONSTANT ##########
 swarm_master_ip = '10.2.9.255'
-redis = Redis(host='redis', port=6379)
-# redis = Redis(host='localhost', port=6379)
+# redis = Redis(host='redis', port=6379)
+redis = Redis(host='localhost', port=6379)
 
 #### HELPER FUNCTIONS ####
 def update_array(old_roll, new_resp):
@@ -54,28 +54,35 @@ async def time(websocket, path):
 
     replicas = 1
 
+    graph_to_send = {'x1': x, 'y1': y1,
+                     'x2': x, 'y2': y2,
+                     'x3': x, 'y3': y3}
+    graph_to_send = json.dumps({'message': 'INIT', 'data': graph_to_send})
+
+    await websocket.send(graph_to_send)
     while True:
-        response_time = get_new_response()
-        rolling_response = update_array(rolling_response, response_time)
-        avg_response = avg_arr(rolling_response)
-        y1 = update_array(y1, avg_response)
-
-        hits_current = int(redis.get('hits').decode())
-        workload = hits_current - hits_prev
-        hits_prev = hits_current
-
-        rolling_workload = update_array(rolling_workload, workload)
-        avg_workload = avg_arr(rolling_workload)
-        y2 = update_array(y2, avg_workload)
-
-        y3 = update_array(y3, replicas)
-        # Test data
-        graph_to_send = json.dumps({'x1': x, 'y1': y1,
-                                    'x2': x, 'y2': y2,
-                                    'x3': x, 'y3': y3})
+        # response_time = get_new_response()
+        # rolling_response = update_array(rolling_response, response_time)
+        # avg_response = avg_arr(rolling_response)
+        # y1 = update_array(y1, avg_response)
+        #
+        # hits_current = int(redis.get('hits').decode())
+        # workload = hits_current - hits_prev
+        # hits_prev = hits_current
+        #
+        # rolling_workload = update_array(rolling_workload, workload)
+        # avg_workload = avg_arr(rolling_workload)
+        # y2 = update_array(y2, avg_workload)
+        #
+        # y3 = update_array(y3, replicas)
+        # # Test data
+        # graph_to_send = {'x1': x, 'y1': y1,
+        #                  'x2': x, 'y2': y2,
+        #                  'x3': x, 'y3': y3}
+        graph_to_send = json.dumps({'message': 'UPDATE', 'data': "hey"})
 
         await websocket.send(graph_to_send)
-        # await asyncio.sleep(random.random() * 3)
+        await asyncio.sleep(random.random() * 3)
 
 
 start_server = websockets.serve(time, "0.0.0.0", 5678)
