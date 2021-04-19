@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   as-client:
@@ -9,23 +9,25 @@ services:
     image: jordanlos/autoscaler-server
     ports:
       - "5678:5678"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
   web:
     image: henaras/simpleweb:1
     ports:
       - "8000:8000"
     deploy:
-     resources:
+      resources:
         limits:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
     deploy:
-     resources:
+      resources:
         limits:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
 
   visualizer:
