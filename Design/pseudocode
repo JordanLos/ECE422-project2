@@ -1,0 +1,35 @@
+# Auto scaling is done whenever the response time of the service is 
+# outside of an acceptable threshold, defined further on.
+# When this is the case, the estimated optimal number of replicas
+# is computed by the math below, and applied to the swarm.
+
+# alpha is the desired seconds per request per container. This is
+# calculated through the desired seconds per request being 1.5
+alpha = 0.7 
+
+# The following thresholds are used to determine when to scale,
+# keeping the response time between 2 and 4 seconds
+upper_response_time_threshold = 4
+lower_response_time_threshold = 2
+
+auto_scaler_function() {
+	# The auto scaler function loops until being aborted.
+	while(true) {
+		# Get metrics required by algorithm and plots
+	hits_before_request = redis.get(‘hits’)
+	response_time = getResponseTime()
+	hits_after_request = reds.get(‘hits’)
+	workload = hits_after_request - hits_before_request
+	
+	# Check threshold to know if scaling is needed
+	If (response_time>upper_response_time_threshold
+    or response_time<lower_response_time_threshold) {
+		requests_per_second = workload / response_time
+		new_replicas_needed = ceil(requests_per_second/alpha)
+		scale_swarm(new_replicas_needed)
+	}
+	
+	# whether scaling was done or not, update plots
+	updateGraphVisuals()
+	}
+}
