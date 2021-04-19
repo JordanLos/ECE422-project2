@@ -14,7 +14,7 @@ swarm_master_ip = '10.2.9.255'
 alpha = 0.7
 upper_response_time_threshold = 4
 lower_response_time_threshold = 2
-client = docker.from_env()
+#client = docker.from_env()
 
 #redis = Redis(host='localhost', port=6379)
 redis = Redis(host='redis', port=6379)
@@ -35,12 +35,6 @@ def avg_arr(array):
 def get_new_response():
     response = requests.get('http://' + swarm_master_ip + ':8000')
     return response.elapsed.total_seconds()
-
-
-def get_workload(old_workload):
-    current_workload = int(redis.get('hits').decode())
-    print("old: " + str(old_workload) + ", new: ," + str(current_workload))
-    return current_workload - old_workload
 
 def get_container_number(rps, alpha):
     new_val = math.ceil(rps / alpha)
@@ -66,7 +60,7 @@ async def time(websocket, path):
     while True:
         # Get Metrics
         hits_before = int(redis.get('hits').decode())
-        response = requests.get('http://' + swarm_master_ip + ':8000')
+        response = requests.get('http://' + swarm_master_ip + ':8000' )
         response_time = response.elapsed.total_seconds()
         hits_after = int(redis.get('hits').decode())
         workload = hits_after - hits_before
@@ -75,8 +69,9 @@ async def time(websocket, path):
         if ((response_time > upper_response_time_threshold) or (response_time < lower_response_time_threshold)):
             req_ps = workload/response_time
             new_replica_count = get_container_number(req_ps, alpha)
-            bottle_neck = next((x for x in client.services.list() if x.name == 'app_web'), None)
-            if bottle_neck != None:
+            #bottle_neck = next((x for x in client.services.list() if x.name == 'app_web'), None)
+            #if bottle_neck != None:
+            if False:
                 did_it_scale = bottle_neck.scale(replicas)
                 replicas = new_replica_count
 
