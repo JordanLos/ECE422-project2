@@ -16,20 +16,20 @@ auto_scaler_function() {
 	# The auto scaler function loops until being aborted.
 	while(true) {
 		# Get metrics required by algorithm and plots
-	hits_before_request = redis.get(‘hits’)
-	response_time = getResponseTime()
-	hits_after_request = reds.get(‘hits’)
-	workload = hits_after_request - hits_before_request
-	
-	# Check threshold to know if scaling is needed
-	If (response_time>upper_response_time_threshold
-    or response_time<lower_response_time_threshold) {
-		requests_per_second = workload / response_time
-		new_replicas_needed = ceil(requests_per_second/alpha)
-		scale_swarm(new_replicas_needed)
-	}
-	
-	# whether scaling was done or not, update plots
-	updateGraphVisuals()
+		hits_before_request = redis.get(‘hits’)
+		response_time = getResponseTime()
+		hits_after_request = reds.get(‘hits’)
+		workload = hits_after_request - hits_before_request
+		average_response_time = getAverageTime(response_time)
+		
+		# Check threshold to know if scaling is needed
+		If (average_response_time>upper_response_time_threshold or average_response_time<lower_response_time_threshold) {
+			requests_per_second = workload / response_time
+			new_replicas_needed = ceil(requests_per_second/alpha)
+			scale_swarm(new_replicas_needed)
+		}
+
+		# whether scaling was done or not, update plots
+		updateGraphVisuals()
 	}
 }
