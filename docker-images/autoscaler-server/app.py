@@ -1,21 +1,23 @@
 #!/usr/bin/env python
-
-# WS server that sends messages at random intervals
-
 import asyncio
 import websockets
-
+import docker
 import json
 import numpy as np
-
+import math
 import requests
 
 from redis import Redis
 
-##### CONSTANT ##########
+########## CONSTANTS ##########
 swarm_master_ip = '10.2.9.255'
+alpha = 0.7
+upper_response_time_threshold = 4
+lower_response_time_threshold = 2
+client = docker.from_env()
+
+#redis = Redis(host='localhost', port=6379)
 redis = Redis(host='redis', port=6379)
-# redis = Redis(host='localhost', port=6379)
 
 #### HELPER FUNCTIONS ####
 def update_array(old_roll, new_resp):
@@ -40,10 +42,17 @@ def get_workload(old_workload):
     print("old: " + str(old_workload) + ", new: ," + str(current_workload))
     return current_workload - old_workload
 
+def get_container_number(rps, alpha):
+    new_val = math.ceil(rps / alpha)
+    if (new_val == 0):
+        new_val = 1
+    return new_val
+    
+
 
 async def time(websocket, path):
     # Init data
-    x = np.arange(-120, 0, 0.5).tolist()
+    x = np.arange(-120, 0, 0.5).tolist() # TODO remove and make it rolling
     y1 = np.zeros(len(x), dtype=int).tolist()
     y2 = np.zeros(len(x), dtype=int).tolist()
     y3 = np.zeros(len(x), dtype=int).tolist()
@@ -55,7 +64,24 @@ async def time(websocket, path):
     replicas = 1
 
     while True:
-        response_time = get_new_response()
+        # Get Metrics
+        hits_before = int(redis.get('hits').decode())
+        response = requests.get('http://' + swarm_master_ip + ':8000')
+        response_time = response.elapsed.total_seconds()
+        hits_after = int(redis.get('hits').decode())
+        workload = hits_after - hits_before
+        
+        # Check threshold & Scale
+        if ((response_time > upper_response_time_threshold) or (response_time < lower_response_time_threshold)):
+            req_ps = workload/response_time
+            new_replica_count = get_container_number(req_ps, alpha)
+            bottle_neck = next((x for x in client.services.list() if x.name == 'app_web'), None)
+            if bottle_neck != None:
+                did_it_scale = bottle_neck.scale(replicas)
+                replicas = new_replica_count
+
+
+        # Update Graph
         rolling_response = update_array(rolling_response, response_time)
         avg_response = avg_arr(rolling_response)
         y1 = update_array(y1, avg_response)
@@ -69,7 +95,8 @@ async def time(websocket, path):
         y2 = update_array(y2, avg_workload)
 
         y3 = update_array(y3, replicas)
-        # Test data
+    
+        # Calculate X each time and normalize
         graph_to_send = json.dumps({'x1': x, 'y1': y1,
                                     'x2': x, 'y2': y2,
                                     'x3': x, 'y3': y3})

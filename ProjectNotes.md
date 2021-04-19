@@ -267,3 +267,10 @@ File Sturecture
 
    
 
+$\text{Target: }\frac{\alpha \cdot req}{sec\cdot cont}$
+
+$\text{Receive: }\frac{x \cdot req}{sec}$
+
+$P = Ceil(\frac{x \cdot req}{sec} \cdot \frac{sec\cdot cont}{\alpha \cdot req})$
+
+$Recorded: \frac{[1,2]s}{req\cdot cont} $
